@@ -1,13 +1,8 @@
-// =========================================================
-//  Cafeteria Gourmet - scripts do front
-//  (sem framework, so JS puro mesmo)
-// =========================================================
 
 function formatBRL(v) {
     return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-// esconde os alertas depois de uns segundos
 document.querySelectorAll(".alert").forEach(function (el) {
     setTimeout(function () {
         el.style.opacity = "0";
@@ -16,9 +11,7 @@ document.querySelectorAll(".alert").forEach(function (el) {
 });
 
 
-// ---------------------------------------------------------
-// Filtro de categorias do cardapio (US02)
-// ---------------------------------------------------------
+// filtro categorias
 function initCategoryFilter(initial) {
     const chips = document.querySelectorAll("#filters .chip");
     const cards = document.querySelectorAll("#product-grid .product");
@@ -37,7 +30,7 @@ function initCategoryFilter(initial) {
         chips.forEach(c => c.classList.toggle("active", c.dataset.cat === cat));
         noResults.classList.toggle("hidden", visible > 0);
 
-        // atualiza a url sem recarregar, assim se der F5 continua no filtro
+        // pra continuar filtrado se der F5
         const url = cat === "todos" ? "/" : "/?cat=" + cat;
         history.replaceState(null, "", url);
     }
@@ -50,16 +43,13 @@ function initCategoryFilter(initial) {
 }
 
 
-// ---------------------------------------------------------
-// CEP -> busca endereco no ViaCEP
-// ---------------------------------------------------------
+// viacep
 function setupCepLookup(onCepFound) {
     document.querySelectorAll(".cep-input").forEach(input => {
         const form = input.closest("form");
         const msg = input.parentElement.querySelector(".cep-msg");
 
         input.addEventListener("input", function () {
-            // mascara 00000-000
             let v = this.value.replace(/\D/g, "").slice(0, 8);
             if (v.length > 5) v = v.slice(0, 5) + "-" + v.slice(5);
             this.value = v;
@@ -101,9 +91,7 @@ if (document.querySelector(".address-form") && !document.getElementById("checkou
 }
 
 
-// ---------------------------------------------------------
-// Checkout: frete, forma de pagamento, mascara do cartao
-// ---------------------------------------------------------
+// checkout
 function initCheckout(quoteUrl) {
     const subtotal = parseFloat(document.getElementById("subtotal").dataset.value);
     const feeEl = document.getElementById("fee");
@@ -144,7 +132,6 @@ function initCheckout(quoteUrl) {
         return checked.dataset.cep;
     }
 
-    // troca entre endereco salvo e novo
     document.querySelectorAll("input[name=address_id]").forEach(r => {
         r.addEventListener("change", () => {
             newAddr.classList.toggle("hidden", r.value !== "new" || !r.checked);
@@ -154,7 +141,6 @@ function initCheckout(quoteUrl) {
 
     setupCepLookup(cep => updateQuote(cep));
 
-    // pix x cartao
     document.querySelectorAll("input[name=payment_method]").forEach(r => {
         r.addEventListener("change", () => {
             const isPix = document.querySelector("input[name=payment_method]:checked").value === "pix";
@@ -163,7 +149,6 @@ function initCheckout(quoteUrl) {
         });
     });
 
-    // mascaras do cartao
     const cardInput = document.querySelector("[name=card_number]");
     cardInput.addEventListener("input", function () {
         let v = this.value.replace(/\D/g, "").slice(0, 19);
@@ -186,9 +171,7 @@ function initCheckout(quoteUrl) {
 }
 
 
-// ---------------------------------------------------------
-// Acompanhamento do pedido (US06) - polling a cada 10s
-// ---------------------------------------------------------
+// acompanhamento do pedido
 const STEPS = ["recebido", "em_preparo", "saiu", "entregue"];
 
 function paintTracker(status) {
@@ -226,9 +209,7 @@ function startOrderTracking(url) {
 }
 
 
-// ---------------------------------------------------------
-// Painel do atendente (US11 / US12)
-// ---------------------------------------------------------
+// painel atendente
 function startStaffPanel(jsonUrl, advanceUrlTemplate) {
     let knownIds = null; // null = primeira carga, nao toca som
     const nextLabel = { em_preparo: "Iniciar preparo", saiu: "Saiu p/ entrega", entregue: "Marcar entregue" };
@@ -244,7 +225,6 @@ function startStaffPanel(jsonUrl, advanceUrlTemplate) {
             osc.frequency.value = 880;
             gain.gain.value = 0.2;
             osc.start();
-            // dois bipes
             setTimeout(() => { osc.frequency.value = 660; }, 200);
             setTimeout(() => { osc.stop(); ctx.close(); }, 450);
         } catch (e) {
@@ -283,7 +263,6 @@ function startStaffPanel(jsonUrl, advanceUrlTemplate) {
         document.getElementById("k-entregue").innerHTML =
             data.done.map(o => card(o, true)).join("") || '<p class="muted small">nenhum ainda</p>';
 
-        // detecta pedido novo
         const ids = data.active.filter(o => o.status === "recebido").map(o => o.id);
         if (knownIds !== null) {
             const hasNew = ids.some(id => !knownIds.includes(id));
@@ -305,7 +284,7 @@ function startStaffPanel(jsonUrl, advanceUrlTemplate) {
             .catch(e => console.log("falha ao carregar pedidos", e));
     }
 
-    // clique no botao de avancar status (delegacao de evento pq os cards sao recriados)
+    // delegacao pq os cards sao recriados a cada atualizacao
     document.querySelector(".kanban").addEventListener("click", function (ev) {
         const b = ev.target.closest("button[data-id]");
         if (!b) return;

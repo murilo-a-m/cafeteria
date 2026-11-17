@@ -1,10 +1,6 @@
--- =============================================================
--- Cafeteria Gourmet Delivery - Projeto fisico do banco (MySQL)
--- PIT II - Sistemas de Informacao
---
--- Obs: a aplicacao cria as tabelas sozinha (db.create_all()) mas
--- deixei o script aqui pra documentacao e pra quem quiser criar na mao.
--- =============================================================
+-- script do banco (MySQL) - cafeteria / PIT II
+-- o app ja cria as tabelas sozinho com db.create_all(), deixei aqui
+-- mais pra documentacao ou se precisar criar na mao
 
 CREATE DATABASE IF NOT EXISTS cafeteria DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE cafeteria;

@@ -1,8 +1,4 @@
-"""
-Popula o banco com dados iniciais pra testar.
-Rodar UMA vez:  python seed.py
-(se quiser zerar tudo: python seed.py --reset)
-"""
+# dados pra teste. python seed.py --reset apaga tudo e cria de novo
 import sys
 import random
 from datetime import datetime, timedelta
@@ -12,21 +8,20 @@ from app import app
 from models import db, User, Product, Order, OrderItem, Address
 
 PRODUCTS = [
-    # nome, categoria, preco, descricao
-    ("Espresso", "bebidas", "7.50", "Dose curta de café especial, grãos do Cerrado Mineiro."),
-    ("Cappuccino Italiano", "bebidas", "13.90", "Espresso, leite vaporizado e bastante espuma."),
-    ("Latte de Caramelo", "bebidas", "16.50", "Espresso com leite e calda de caramelo da casa."),
-    ("Mocha", "bebidas", "15.90", "Café, chocolate belga e leite cremoso."),
-    ("Cold Brew", "bebidas", "14.00", "Extração a frio por 18h. Suave e refrescante."),
-    ("Chá Chai Latte", "bebidas", "14.50", "Blend de especiarias com leite vaporizado."),
-    ("Croissant de Chocolate", "doces", "11.90", "Massa folhada amanteigada recheada com chocolate."),
-    ("Cheesecake de Frutas Vermelhas", "doces", "18.90", "Fatia generosa com calda artesanal."),
-    ("Brownie com Nozes", "doces", "9.90", "Brownie úmido de chocolate 70%."),
-    ("Cookie Gigante", "doces", "8.50", "Gotas de chocolate ao leite, crocante por fora."),
-    ("Pão de Queijo (6 un)", "salgados", "12.00", "Feito com queijo canastra."),
-    ("Croissant Presunto e Queijo", "salgados", "14.90", "Quentinho, saído do forno."),
-    ("Kit Café da Manhã", "kits", "59.90", "2 cappuccinos, 2 croissants, pão de queijo e suco."),
-    ("Cesta Presente Gourmet", "kits", "129.90", "Café em grãos 250g, caneca, cookies e chocolates."),
+    ("Espresso", "bebidas", "7.50", "Café expresso"),
+    ("Cappuccino", "bebidas", "13.90", "Café com leite vaporizado e espuma"),
+    ("Latte caramelo", "bebidas", "16.50", "Expresso, leite e calda de caramelo"),
+    ("Mocha", "bebidas", "15.90", "Café com chocolate e leite"),
+    ("Cold Brew", "bebidas", "14.00", "Café gelado, extraído a frio"),
+    ("Chai latte", "bebidas", "14.50", "Chá com especiarias e leite"),
+    ("Croissant de chocolate", "doces", "11.90", "Recheado com chocolate"),
+    ("Cheesecake", "doces", "18.90", "Fatia"),
+    ("Brownie", "doces", "9.90", ""),
+    ("Cookie", "doces", "8.50", "Com gotas de chocolate"),
+    ("Pão de Queijo (6 un)", "salgados", "12.00", ""),
+    ("Croissant de presunto e queijo", "salgados", "14.90", ""),
+    ("Kit Café da Manhã", "kits", "59.90", "2 cappuccinos, 2 croissants, pão de queijo e suco"),
+    ("Cesta presente", "kits", "129.90", "Café em grãos 250g, caneca e cookies"),
 ]
 
 
@@ -41,11 +36,11 @@ def run(reset=False):
             print("Banco ja tem dados. Use --reset pra recriar.")
             return
 
-        admin = User(name="Administrador", email="admin@cafeteria.com", role="admin")
+        admin = User(name="Admin", email="admin@cafeteria.com", role="admin")
         admin.set_password("admin123")
-        atendente = User(name="Ana Atendente", email="atendente@cafeteria.com", role="atendente")
+        atendente = User(name="Juliana", email="atendente@cafeteria.com", role="atendente")
         atendente.set_password("atend123")
-        cliente = User(name="Cliente Teste", email="cliente@teste.com", role="cliente", phone="(41) 99999-0000")
+        cliente = User(name="Murilo", email="cliente@teste.com", role="cliente", phone="(41) 98765-4321")
         cliente.set_password("cliente123")
         db.session.add_all([admin, atendente, cliente])
 
@@ -53,14 +48,13 @@ def run(reset=False):
             db.session.add(Product(name=name, category=cat, price=Decimal(price), description=desc))
         db.session.commit()
 
-        addr = Address(user_id=cliente.id, cep="80010-000", street="Rua XV de Novembro", number="700",
-                       district="Centro", city="Curitiba", state="PR")
+        addr = Address(user_id=cliente.id, cep="80240-210", street="Rua Bento Viana", number="1120",
+                       district="Batel", city="Curitiba", state="PR")
         db.session.add(addr)
         db.session.commit()
 
-        # alguns pedidos antigos pro relatorio e historico nao ficarem vazios
+        # uns pedidos antigos pro relatorio nao ficar vazio
         prods = Product.query.all()
-        random.seed(42)
         for days_ago in range(1, 8):
             for _ in range(random.randint(1, 4)):
                 when = datetime.now() - timedelta(days=days_ago, hours=random.randint(0, 8))
@@ -81,10 +75,7 @@ def run(reset=False):
                 db.session.add(o)
         db.session.commit()
 
-        print("Pronto! Usuarios criados:")
-        print("  admin@cafeteria.com / admin123")
-        print("  atendente@cafeteria.com / atend123")
-        print("  cliente@teste.com / cliente123")
+        print("ok")
 
 
 if __name__ == "__main__":

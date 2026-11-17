@@ -16,10 +16,6 @@ admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 ALLOWED_EXT = {"png", "jpg", "jpeg", "webp"}
 
 
-# ----------------------------------------------------------------
-# PRODUTOS (US13)
-# ----------------------------------------------------------------
-
 @admin_bp.route("/produtos")
 @role_required("admin")
 def products():
@@ -104,10 +100,6 @@ def delete_product(product_id):
     return redirect(url_for("admin.products"))
 
 
-# ----------------------------------------------------------------
-# USUARIOS (US15)
-# ----------------------------------------------------------------
-
 @admin_bp.route("/usuarios")
 @role_required("admin")
 def users():
@@ -147,10 +139,6 @@ def access_logs():
     logs = AccessLog.query.order_by(AccessLog.created_at.desc()).limit(200).all()
     return render_template("admin/logs.html", logs=logs)
 
-
-# ----------------------------------------------------------------
-# RELATORIO DE VENDAS (US14)
-# ----------------------------------------------------------------
 
 def parse_date(txt, fallback):
     try:

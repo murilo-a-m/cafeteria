@@ -20,7 +20,6 @@ def save_cart(cart):
 
 
 def get_cart_items():
-    """monta a lista de itens com produto + subtotal. usado no carrinho e no checkout"""
     cart = get_cart()
     items = []
     subtotal = Decimal("0")
@@ -86,7 +85,6 @@ def add_to_cart(product_id):
 
     flash(f"{product.name} adicionado ao carrinho!", "success")
 
-    # volta pra onde o cliente estava
     back = request.form.get("back")
     if back == "cart":
         return redirect(url_for("cart.view_cart"))
@@ -108,7 +106,6 @@ def update_item(product_id):
         if cart[key]["qty"] <= 0:
             cart.pop(key)
     else:
-        # veio do campo de observacao
         cart[key]["note"] = request.form.get("note", "").strip()[:200]
 
     save_cart(cart)

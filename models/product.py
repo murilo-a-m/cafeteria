@@ -29,5 +29,4 @@ class Product(db.Model):
     def image_url(self):
         if self.image:
             return "/static/" + self.image
-        # no photo -> generic picture of the category
         return f"/static/img/products/{self.category}.svg"

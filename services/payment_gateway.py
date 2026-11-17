@@ -1,14 +1,5 @@
-"""
-Gateway de pagamento SIMULADO.
-
-No planejamento a ideia era PagSeguro/Stripe, mas pra entregar o PIT sem
-precisar de conta de lojista eu fiz um "fake" que se comporta parecido:
- - valida o numero do cartao (Luhn), validade e CVV
- - cartao terminado em 0002 sempre e recusado (pra testar o erro)
- - pix gera um codigo copia-e-cola e o pagamento e confirmado num botao
-
-Se um dia for pra producao, e so trocar as funcoes daqui.
-"""
+# pagamento fake, sem conta de lojista nao da pra usar PagSeguro/Stripe de verdade.
+# cartao final 0002 sempre recusa
 import random
 import string
 from datetime import date
@@ -46,7 +37,6 @@ def charge_card(number, holder, expiry, cvv, amount):
     if not holder or len(holder.strip()) < 3:
         return PaymentResult(False, "Informe o nome impresso no cartão.")
 
-    # validade no formato MM/AA
     try:
         mm, yy = expiry.split("/")
         mm = int(mm)

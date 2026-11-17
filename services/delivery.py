@@ -1,14 +1,10 @@
-# Calculo de taxa e prazo de entrega.
-# Nao tem integracao com API de frete, a regra e pela faixa do CEP mesmo.
-# Curitiba = 80000-000 ate 82999-999, regiao metropolitana comeca com 83
+# frete pela faixa do CEP. Curitiba 80-82, RMC 83
 
 from utils import only_digits
 
 
 def calc_delivery(cep):
-    """
-    Returns (fee, minutes) or None if we don't deliver there.
-    """
+    # retorna (taxa, minutos) ou None se nao entrega no CEP
     cep = only_digits(cep)
     if len(cep) != 8:
         return None
@@ -17,7 +13,6 @@ def calc_delivery(cep):
     prefix3 = int(cep[:3])
 
     if prefix in (80, 81, 82):
-        # centro e bairros mais perto
         if prefix == 80:
             return 6.90, 35
         return 8.90, 45
@@ -28,5 +23,4 @@ def calc_delivery(cep):
             return 11.90, 55
         return 15.90, 70
 
-    # fora da area
     return None

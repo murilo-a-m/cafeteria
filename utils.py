@@ -27,7 +27,6 @@ def login_required(f):
 
 
 def role_required(*roles):
-    # uso: @role_required("admin") ou @role_required("atendente", "admin")
     def deco(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
@@ -42,11 +41,9 @@ def role_required(*roles):
 
 
 def brl(value):
-    """format 12.5 -> R$ 12,50"""
     if value is None:
         value = 0
     s = f"{float(value):,.2f}"
-    # troca , por . e vice versa (padrao brasileiro)
     s = s.replace(",", "X").replace(".", ",").replace("X", ".")
     return "R$ " + s
 

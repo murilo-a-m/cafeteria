@@ -37,7 +37,6 @@ class User(db.Model):
 
 
 class Address(db.Model):
-    """Enderecos salvos do cliente (US04 - salvar enderecos frequentes)"""
     __tablename__ = "addresses"
 
     id = db.Column(db.Integer, primary_key=True)

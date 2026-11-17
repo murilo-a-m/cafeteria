@@ -1,7 +1,4 @@
-/* ============================
-   Cafeteria Gourmet - estilos
-   paleta: cafe / creme / caramelo
-   ============================ */
+/* cores: cafe, creme e caramelo */
 
 :root {
     --coffee: #3e2723;
@@ -50,7 +47,7 @@ a { color: var(--caramel-dark); }
 .nowrap { white-space: nowrap; }
 .inline { display: inline; }
 
-/* ---------- topo ---------- */
+/* topo */
 .topbar { background: var(--coffee); color: #fff; position: sticky; top: 0; z-index: 10; }
 .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
 .logo { color: #fff; text-decoration: none; font-family: "Playfair Display", serif; font-size: 1.35rem; }
@@ -63,7 +60,7 @@ a { color: var(--caramel-dark); }
 .badge { background: #fff; color: var(--coffee); border-radius: 10px; padding: 0 7px; font-size: .8rem; margin-left: 4px; }
 .menu-btn { display: none; background: none; border: 0; color: #fff; font-size: 1.6rem; cursor: pointer; }
 
-/* ---------- alertas ---------- */
+/* alertas */
 .flashes { margin-bottom: 16px; }
 .alert { padding: 12px 16px; border-radius: var(--radius); margin-bottom: 8px; transition: opacity .5s; }
 .alert-success { background: #e6f4e7; color: var(--ok); }
@@ -71,7 +68,7 @@ a { color: var(--caramel-dark); }
 .alert-warning { background: #fff4e0; color: #8a5a00; }
 .alert-info { background: #ece6df; color: var(--coffee-2); }
 
-/* ---------- botoes ---------- */
+/* botoes */
 .btn {
     display: inline-block; background: var(--caramel); color: #fff; border: 0;
     padding: 10px 20px; border-radius: 24px; font-weight: 700; font-size: .95rem;
@@ -86,7 +83,7 @@ a { color: var(--caramel-dark); }
 .btn-link { background: none; border: 0; color: var(--caramel-dark); cursor: pointer; text-decoration: underline; font-family: inherit; padding: 0; }
 .btn-link.danger { color: var(--danger); }
 
-/* ---------- vitrine ---------- */
+/* vitrine */
 .hero {
     background: linear-gradient(120deg, var(--coffee) 0%, var(--coffee-2) 100%);
     color: #fff; border-radius: 16px; padding: 36px 32px; margin-bottom: 24px;
@@ -120,7 +117,7 @@ a { color: var(--caramel-dark); }
 
 .empty { text-align: center; padding: 40px 0; color: var(--muted); }
 
-/* ---------- forms ---------- */
+/* forms */
 .form label, .address-form label, .box label { display: block; margin-bottom: 12px; font-weight: 600; font-size: .9rem; }
 input[type=text], input[type=email], input[type=password], input[type=number], input[type=date],
 select, textarea {
@@ -142,7 +139,7 @@ label.check input { width: auto; }
 details.box summary { cursor: pointer; font-weight: 700; color: var(--coffee); }
 details.box[open] summary { margin-bottom: 14px; }
 
-/* ---------- carrinho ---------- */
+/* carrinho */
 .cart-list { background: #fff; border-radius: 14px; overflow: hidden; }
 .cart-item { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
 .cart-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; }
@@ -155,7 +152,7 @@ details.box[open] summary { margin-bottom: 14px; }
 .cart-summary { text-align: right; margin-top: 18px; font-size: 1.15rem; }
 .cart-summary .actions { margin-top: 12px; display: flex; gap: 10px; justify-content: flex-end; }
 
-/* ---------- checkout ---------- */
+/* checkout */
 .checkout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; }
 .summary { position: sticky; top: 84px; }
 .sum-line { display: flex; justify-content: space-between; gap: 10px; margin: 6px 0; }
@@ -177,7 +174,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 12px 0; }
 }
 #pix-code { font-family: monospace; font-size: .8rem; }
 
-/* ---------- acompanhamento ---------- */
+/* acompanhamento */
 .tracker { display: flex; justify-content: space-between; margin: 24px 0; position: relative; }
 .tracker::before { content: ""; position: absolute; top: 11px; left: 12%; right: 12%; height: 4px; background: var(--line); }
 .step { flex: 1; text-align: center; position: relative; color: var(--muted); font-weight: 600; font-size: .9rem; }
@@ -203,7 +200,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 12px 0; }
 .stars-input label:hover ~ label { color: #f5a623; }
 .stars-static { font-size: 1.6rem; color: #f5a623; margin: 0; }
 
-/* ---------- tabelas ---------- */
+/* tabelas */
 .table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; }
 .table th, .table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); font-size: .92rem; vertical-align: middle; }
 .table th { background: #f3ebe2; color: var(--coffee-2); font-weight: 700; }
@@ -213,7 +210,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 12px 0; }
 .thumb.big { width: 120px; height: 120px; display: block; margin: 6px 0; }
 .address-row { display: flex; justify-content: space-between; background: #fff; padding: 10px 14px; border-radius: 8px; margin-bottom: 6px; }
 
-/* ---------- painel atendente ---------- */
+/* painel atendente */
 .panel-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
 .kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 .col-k { background: #efe6dc; border-radius: 12px; padding: 12px; min-height: 300px; }
@@ -227,7 +224,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 12px 0; }
 .k-top { display: flex; justify-content: space-between; }
 .k-cust { font-weight: 600; color: var(--coffee-2); }
 
-/* ---------- relatorio ---------- */
+/* relatorio */
 .filters-form { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
 .filters-form label { margin: 0; }
 .filters-form input, .filters-form select { width: auto; }
@@ -241,10 +238,10 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 12px 0; }
 .bar-val { font-size: .7rem; color: var(--muted); }
 .bar-label { font-size: .7rem; color: var(--muted); margin-top: 4px; }
 
-/* ---------- rodape ---------- */
+/* rodape */
 .footer { background: var(--coffee); color: #bfa999; font-size: .85rem; padding: 18px 0; text-align: center; }
 
-/* ---------- mobile ---------- */
+/* mobile */
 @media (max-width: 800px) {
     .menu-btn { display: block; }
     .nav { display: none; position: absolute; top: 64px; left: 0; right: 0; background: var(--coffee); flex-direction: column; padding: 14px; gap: 12px; }

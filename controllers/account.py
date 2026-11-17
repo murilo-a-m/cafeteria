@@ -89,7 +89,6 @@ def login():
         session["user_id"] = user.id
         log_access(user, email, "login")
 
-        # funcionario cai direto no painel
         if user.is_staff():
             default = url_for("staff.panel")
         else:

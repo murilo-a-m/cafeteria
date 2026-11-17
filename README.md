@@ -1,105 +1,78 @@
 # Cafeteria Gourmet Delivery
 
-Projeto do PIT II de Sistemas de Informação (Cruzeiro do Sul Virtual).
-É a implementação do sistema que foi planejado no PIT I (BMC + Product Backlog com 15 user stories).
+Projeto do PIT II (Sistemas de Informação - Cruzeiro do Sul Virtual). É a implementação do sistema que eu planejei no PIT I, a partir do backlog de 15 user stories.
 
-Aplicação web de pedidos para uma cafeteria gourmet com delivery: cliente monta o pedido e paga,
-o atendente acompanha os pedidos num painel e o administrador cuida do cardápio, usuários e relatórios.
+Basicamente é um site de pedidos pra uma cafeteria com delivery. O cliente monta o pedido e paga, o atendente vai acompanhando os pedidos num painel e o admin cuida do cardápio, dos usuários e dos relatórios.
 
-**Stack:** Python 3 + Flask (padrão MVC), SQLAlchemy, SQLite (local) ou MySQL (produção), HTML/CSS/JS puro no front.
+Feito em Python com Flask (MVC), SQLAlchemy e SQLite rodando local (no servidor dá pra usar MySQL). O front é HTML, CSS e JS puro.
 
-## Estrutura (MVC)
+## Pastas
+
+- `models/` - as tabelas (usuário, produto, pedido...)
+- `controllers/` - as rotas, separadas por parte do sistema (vitrine, carrinho, pedidos, conta, painel do atendente e admin)
+- `views/` - os templates HTML
+- `services/` - cálculo do frete e o pagamento simulado
+- `static/` - css, js e imagens
+- `database/schema_mysql.sql` - script do banco
+- `seed.py` - cria os dados de teste
+
+## Rodando
 
 ```
-cafeteria/
-├── app.py               # cria o app e registra os controllers
-├── config.py
-├── seed.py              # popula o banco com dados de teste
-├── models/              # MODEL  - tabelas (User, Product, Order...)
-├── controllers/         # CONTROLLER - rotas/regras de cada modulo
-│   ├── shop.py          #   vitrine
-│   ├── cart.py          #   carrinho
-│   ├── orders.py        #   checkout, pagamento, acompanhamento, avaliacao
-│   ├── account.py       #   cadastro, login, minha conta
-│   ├── staff.py         #   painel do atendente
-│   └── admin.py         #   produtos, usuarios, relatorio
-├── views/               # VIEW - templates HTML (Jinja2)
-├── services/            # calculo de frete e gateway de pagamento (simulado)
-├── static/              # css, js, imagens
-└── database/schema_mysql.sql   # projeto fisico do banco
-```
-
-## Como rodar local
-
-```bash
 python -m venv venv
-# windows: venv\Scripts\activate   |  linux/mac: source venv/bin/activate
+venv\Scripts\activate
 pip install -r requirements.txt
 python seed.py
 python app.py
 ```
 
-Abrir http://127.0.0.1:5000
+(no linux/mac é `source venv/bin/activate`)
 
-### Usuários de teste
+Depois é só abrir http://127.0.0.1:5000
 
-| Perfil    | E-mail                  | Senha      |
-|-----------|-------------------------|------------|
-| Admin     | admin@cafeteria.com     | admin123   |
-| Atendente | atendente@cafeteria.com | atend123   |
-| Cliente   | cliente@teste.com       | cliente123 |
+Usuários que o seed cria:
 
-### Pagamento (ambiente de teste)
+- admin: admin@cafeteria.com / admin123
+- atendente: atendente@cafeteria.com / atend123
+- cliente: cliente@teste.com / cliente123
 
-O gateway é simulado (não tem conta de lojista real):
+## Pagamento
 
-- Cartão aprovado: `4111 1111 1111 1111`, qualquer nome, validade futura (ex: 12/30), CVV 123
-- Cartão recusado: `4000 0000 0000 0002`
-- Pix: gera o código copia-e-cola e o botão "Já paguei" simula a confirmação do banco
+Não tenho conta de lojista, então o pagamento é simulado. Pra testar:
 
-### Entrega
+- cartão `4111 1111 1111 1111` passa (qualquer nome, validade futura tipo 12/30, CVV 123)
+- cartão `4000 0000 0000 0002` é recusado
+- no Pix aparece o código copia e cola e o botão "Já paguei" faz o papel do banco confirmando
 
-A taxa é calculada pela faixa do CEP (Curitiba e região metropolitana). CEP fora da faixa = "não entregamos".
-O endereço é preenchido automaticamente pelo ViaCEP.
+## Entrega
 
-## Publicar no PythonAnywhere (grátis)
+A taxa sai pela faixa do CEP, só atende Curitiba e região metropolitana. Fora disso o site avisa que não entrega. O endereço é preenchido pelo ViaCEP.
 
-1. Criar conta em pythonanywhere.com (plano Beginner)
-2. Em *Consoles > Bash*: subir o projeto (git clone ou upload do zip) e rodar
-   `pip install --user -r requirements.txt` e `python seed.py`
-3. Em *Web > Add a new web app > Manual configuration > Python 3.x*
-4. No arquivo WSGI deixar:
+## Subindo no PythonAnywhere
+
+Usei o plano gratuito.
+
+1. Num console Bash, clonar o projeto (ou subir o zip) e rodar `pip install --user -r requirements.txt` e `python seed.py`
+2. Na aba Web criar um app com Manual configuration, Python 3
+3. No arquivo WSGI colocar:
    ```python
    import sys
    sys.path.insert(0, "/home/SEU_USUARIO/cafeteria")
    from app import app as application
    ```
-5. Em *Static files*: URL `/static/` -> `/home/SEU_USUARIO/cafeteria/static`
-6. Reload. (Opcional: criar banco MySQL na aba *Databases* e setar `DATABASE_URL`)
+4. Em Static files mapear `/static/` pra `/home/SEU_USUARIO/cafeteria/static`
+5. Dar reload
 
-## O que foi implementado (backlog do PIT I)
+Se quiser MySQL é só criar o banco na aba Databases e configurar a variável `DATABASE_URL`.
 
-| US | Funcionalidade | Situação |
-|----|----------------|----------|
-| US01 | Cardápio com fotos e preços | ✅ |
-| US02 | Filtro por categoria sem recarregar | ✅ |
-| US03 | Carrinho com quantidade e observações | ✅ |
-| US04 | Endereço com CEP automático, taxa e prazo, endereços salvos | ✅ |
-| US05 | Pagamento cartão / Pix com tratamento de recusa | ✅ (gateway simulado) |
-| US06 | Acompanhamento do pedido com atualização automática | ✅ (polling a cada 10s) |
-| US07 | Cadastro e login, sessão mantida | ✅ (login Google não feito) |
-| US08 | Histórico + pedir novamente | ✅ |
-| US09 | Avaliação 1-5 estrelas até 48h depois da entrega | ✅ |
-| US10 | Notificação push de promoções | ❌ não implementado |
-| US11 | Painel do atendente em tempo real com alerta sonoro | ✅ |
-| US12 | Mudar status com um clique | ✅ |
-| US13 | CRUD de produtos | ✅ |
-| US14 | Relatório por período/produto/categoria, gráfico, exportação | ✅ (CSV + imprimir em PDF) |
-| US15 | Perfis, ativar/desativar contas, log de acessos | ✅ |
+## O que ficou pronto do backlog
 
-## Limitações conhecidas
+Fiz quase tudo, de US01 até US15. O que ficou faltando ou ficou diferente do planejado:
 
-- gateway de pagamento é simulado
-- sem login com Google e sem push (US10)
-- o "tempo real" é feito com polling, não websocket
-- formulários sem token CSRF (melhoria futura com Flask-WTF)
+- US05: o pagamento funciona, mas com o gateway simulado
+- US06: a tela do pedido atualiza sozinha, mas é polling de 10 em 10 segundos e não websocket
+- US07: cadastro e login funcionam, só não fiz o login com Google
+- US10 (push de promoções) não fiz
+- US14: o relatório exporta CSV, o PDF é pela impressão do navegador
+
+Também não coloquei token CSRF nos formulários, fica pra uma próxima (provavelmente com Flask-WTF).

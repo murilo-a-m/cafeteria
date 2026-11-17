@@ -63,8 +63,7 @@ def advance_status(order_id):
         order.delivered_at = datetime.now()
     db.session.commit()
 
-    # o cliente ve a mudanca pelo polling da tela dele, entao nao precisa fazer mais nada aqui
-    # TODO: mandar e-mail / push quando tiver isso (US10)
+    # TODO avisar o cliente por email/push (US10)
 
     if request.headers.get("X-Requested-With") == "fetch":
         return jsonify(ok=True, status=order.status, label=order.status_label())

@@ -40,7 +40,6 @@ def checkout():
 
     form = request.form
 
-    # ---- endereco ----
     addr_choice = form.get("address_id", "new")
     if addr_choice != "new":
         addr = db.session.get(Address, int(addr_choice))
@@ -123,7 +122,6 @@ def checkout():
         db.session.commit()
         return redirect(url_for("orders.pix_payment", order_id=order.id))
 
-    # deu tudo certo, limpa carrinho
     save_cart({})
     flash("Pagamento aprovado! Seu pedido foi enviado pra cafeteria ☕", "success")
     return redirect(url_for("orders.order_detail", order_id=order.id))
@@ -176,7 +174,6 @@ def order_detail(order_id):
 @orders_bp.route("/<int:order_id>/status")
 @login_required
 def order_status_json(order_id):
-    # polling da tela de acompanhamento (a cada 10s)
     order = get_order_or_404(order_id)
     return jsonify(
         status=order.status,
@@ -214,7 +211,6 @@ def review_order(order_id):
 @orders_bp.route("/<int:order_id>/repetir", methods=["POST"])
 @login_required
 def reorder(order_id):
-    """US08 - pedir novamente: joga os itens do pedido antigo no carrinho"""
     order = get_order_or_404(order_id)
     cart = get_cart()
     skipped = 0
