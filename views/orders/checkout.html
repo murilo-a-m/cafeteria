@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Finalizar pedido{% endblock %}
+{% block content %}
+
+<h1>Finalizar pedido</h1>
+
+<form method="post" class="checkout" id="checkout-form">
+<div class="checkout-main">
+
+    <section class="box">
+        <h2>1. Endereço de entrega</h2>
+
+        {% set chosen = form.get('address_id', addresses[0].id|string if addresses else 'new') %}
+
+        {% for a in addresses %}
+            <label class="radio-line">
+                <input type="radio" name="address_id" value="{{ a.id }}" data-cep="{{ a.cep }}"
+                       {% if chosen == a.id|string %}checked{% endif %}>
+                {{ a.one_line() }} <small class="muted">CEP {{ a.cep }}</small>
+            </label>
+        {% endfor %}
+
+        <label class="radio-line">
+            <input type="radio" name="address_id" value="new" {% if chosen == 'new' %}checked{% endif %}>
+            Usar outro endereço
+        </label>
+
+        <div id="new-address" class="address-form {% if chosen != 'new' %}hidden{% endif %}">
+            {% include "orders/_address_fields.html" %}
+            <label class="check">
+                <input type="checkbox" name="save_address" value="1" checked> Salvar esse endereço pra próximas compras
+            </label>
+        </div>
+    </section>
+
+    <section class="box">
+        <h2>2. Pagamento</h2>
+        {% set pm = form.get('payment_method', 'pix') %}
+        <div class="pay-options">
+            <label class="pay-opt"><input type="radio" name="payment_method" value="pix" {% if pm == 'pix' %}checked{% endif %}> Pix</label>
+            <label class="pay-opt"><input type="radio" name="payment_method" value="credito" {% if pm == 'credito' %}checked{% endif %}> Cartão de crédito</label>
+            <label class="pay-opt"><input type="radio" name="payment_method" value="debito" {% if pm == 'debito' %}checked{% endif %}> Cartão de débito</label>
+        </div>
+
+        <div id="card-fields" class="{% if pm == 'pix' %}hidden{% endif %}">
+            <label>Número do cartão
+                <input type="text" name="card_number" inputmode="numeric" maxlength="23"
+                       placeholder="0000 0000 0000 0000" autocomplete="cc-number">
+            </label>
+            <label>Nome impresso no cartão
+                <input type="text" name="card_holder" value="{{ form.get('card_holder', '') }}" autocomplete="cc-name">
+            </label>
+            <div class="row">
+                <label class="col">Validade
+                    <input type="text" name="card_expiry" placeholder="MM/AA" maxlength="5"
+                           value="{{ form.get('card_expiry', '') }}" autocomplete="cc-exp">
+                </label>
+                <label class="col">CVV
+                    <input type="text" name="card_cvv" maxlength="4" inputmode="numeric" autocomplete="cc-csc">
+                </label>
+            </div>
+            <small class="muted">Ambiente de testes: use 4111 1111 1111 1111 (aprovado) ou 4000 0000 0000 0002 (recusado).</small>
+        </div>
+        <p id="pix-info" class="muted {% if pm != 'pix' %}hidden{% endif %}">
+            O código Pix aparece na próxima tela.
+        </p>
+    </section>
+</div>
+
+<aside class="box summary">
+    <h2>Resumo</h2>
+    {% for it in items %}
+        <div class="sum-line">
+            <span>{{ it.qty }}x {{ it.product.name }}
+                {% if it.note %}<br><small class="muted">obs: {{ it.note }}</small>{% endif %}
+            </span>
+            <span>{{ it.line_total | brl }}</span>
+        </div>
+    {% endfor %}
+    <hr>
+    <div class="sum-line"><span>Subtotal</span><span id="subtotal" data-value="{{ subtotal }}">{{ subtotal | brl }}</span></div>
+    <div class="sum-line"><span>Entrega</span><span id="fee">informe o CEP</span></div>
+    <div class="sum-line"><span>Prazo estimado</span><span id="eta">-</span></div>
+    <div class="sum-line total"><span>Total</span><span id="total">{{ subtotal | brl }}</span></div>
+
+    <button class="btn btn-block" id="btn-finish">Confirmar pedido</button>
+    <a href="{{ url_for('cart.view_cart') }}" class="btn-link center-block">voltar ao carrinho</a>
+</aside>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    initCheckout("{{ url_for('orders.delivery_quote') }}");
+</script>
+{% endblock %}

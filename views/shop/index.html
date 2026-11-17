@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Cardápio{% endblock %}
+{% block content %}
+
+<section class="hero">
+    <h1>Café especial na sua porta</h1>
+    <p>Grãos selecionados, preparados na hora e entregues quentinhos em Curitiba e região.</p>
+</section>
+
+<div class="filters" id="filters">
+    <button class="chip {% if selected == 'todos' %}active{% endif %}" data-cat="todos">Todos</button>
+    {% for key, label in categories.items() %}
+        <button class="chip {% if selected == key %}active{% endif %}" data-cat="{{ key }}">{{ label }}</button>
+    {% endfor %}
+</div>
+
+{% if not products %}
+    <div class="empty"><p>Nenhum produto cadastrado ainda.</p></div>
+{% endif %}
+
+<div class="grid" id="product-grid">
+    {% for p in products %}
+    <div class="card product" data-category="{{ p.category }}">
+        <a href="{{ url_for('shop.product_page', product_id=p.id) }}">
+            <img src="{{ p.image_url() }}" alt="{{ p.name }}" loading="lazy">
+        </a>
+        <div class="card-body">
+            <span class="tag">{{ p.category_label() }}</span>
+            <h3><a href="{{ url_for('shop.product_page', product_id=p.id) }}">{{ p.name }}</a></h3>
+            <p class="desc">{{ p.description or '' }}</p>
+            <div class="card-footer">
+                <strong class="price">{{ p.price | brl }}</strong>
+                <form method="post" action="{{ url_for('cart.add_to_cart', product_id=p.id) }}">
+                    <input type="hidden" name="qty" value="1">
+                    <button class="btn btn-sm">Adicionar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<p class="empty hidden" id="no-results">Nenhum produto nessa categoria.</p>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // filtro sem recarregar a pagina (US02)
+    initCategoryFilter("{{ selected }}");
+</script>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if p else 'Novo' }} produto{% endblock %}
+{% block content %}
+
+<a href="{{ url_for('admin.products') }}" class="back">&larr; Produtos</a>
+<h1>{{ 'Editar produto' if p else 'Novo produto' }}</h1>
+
+{# se voltou com erro usa o form, senao usa o produto #}
+{% macro val(field, default='') -%}
+    {%- if form.get(field) is not none and form.get(field) != '' -%}{{ form.get(field) }}
+    {%- elif p -%}{{ p[field] if p[field] is not none else default }}
+    {%- else -%}{{ default }}{%- endif -%}
+{%- endmacro %}
+
+<form method="post" enctype="multipart/form-data" class="form box narrow">
+    <label>Nome
+        <input type="text" name="name" value="{{ val('name') }}" required>
+    </label>
+    <div class="row">
+        <label class="col">Categoria
+            <select name="category">
+                {% for key, label in categories.items() %}
+                    <option value="{{ key }}" {% if val('category') == key %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label class="col">Preço (R$)
+            <input type="text" name="price" value="{{ val('price') }}" placeholder="12,90" required>
+        </label>
+    </div>
+    <label>Descrição
+        <textarea name="description" rows="3">{{ val('description') }}</textarea>
+    </label>
+    <label>Foto
+        {% if p %}<img src="{{ p.image_url() }}" class="thumb big" alt="">{% endif %}
+        <input type="file" name="image" accept=".png,.jpg,.jpeg,.webp">
+    </label>
+    <label class="check">
+        <input type="checkbox" name="available" value="1" {% if not p or p.available %}checked{% endif %}>
+        Disponível no cardápio
+    </label>
+    <button class="btn">Salvar</button>
+</form>
+{% endblock %}

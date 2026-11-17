@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ p.name }}{% endblock %}
+{% block content %}
+
+<a href="{{ url_for('shop.index') }}" class="back">&larr; Voltar ao cardápio</a>
+
+<div class="product-page">
+    <img src="{{ p.image_url() }}" alt="{{ p.name }}">
+
+    <div>
+        <span class="tag">{{ p.category_label() }}</span>
+        <h1>{{ p.name }}</h1>
+        <p>{{ p.description or '' }}</p>
+        <p class="price big">{{ p.price | brl }}</p>
+
+        <form method="post" action="{{ url_for('cart.add_to_cart', product_id=p.id) }}" class="form">
+            <label>Quantidade
+                <input type="number" name="qty" value="1" min="1" max="20" style="max-width:100px">
+            </label>
+            <label>Observações
+                <textarea name="note" rows="2" maxlength="200"
+                          placeholder="Ex: sem açúcar, leite de aveia, bem quente..."></textarea>
+            </label>
+            <input type="hidden" name="back" value="cart">
+            <button class="btn">Adicionar ao carrinho</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

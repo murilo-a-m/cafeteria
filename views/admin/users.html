@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Usuários{% endblock %}
+{% block content %}
+
+<div class="panel-head">
+    <h1>Usuários</h1>
+    <a href="{{ url_for('admin.access_logs') }}" class="btn btn-outline">Log de acessos</a>
+</div>
+
+<table class="table">
+    <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Situação</th><th></th></tr></thead>
+    <tbody>
+    {% for u in users %}
+        <tr class="{% if not u.active %}faded{% endif %}">
+            <td>{{ u.name }}</td>
+            <td>{{ u.email }}</td>
+            <td>
+                {% if u.id == user.id %}
+                    {{ u.role }} <small class="muted">(você)</small>
+                {% else %}
+                <form method="post" action="{{ url_for('admin.update_user', user_id=u.id) }}" class="inline">
+                    <input type="hidden" name="action" value="role">
+                    <select name="role" onchange="this.form.submit()">
+                        {% for r in ['cliente', 'atendente', 'admin'] %}
+                            <option value="{{ r }}" {% if u.role == r %}selected{% endif %}>{{ r }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+                {% endif %}
+            </td>
+            <td>{{ 'Ativo' if u.active else 'Desativado' }}</td>
+            <td>
+                {% if u.id != user.id %}
+                <form method="post" action="{{ url_for('admin.update_user', user_id=u.id) }}" class="inline">
+                    <input type="hidden" name="action" value="toggle">
+                    <button class="btn btn-sm btn-outline">{{ 'Desativar' if u.active else 'Ativar' }}</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

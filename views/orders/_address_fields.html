@@ -1,0 +1,30 @@
+{# campos de endereco, usado no checkout e na minha conta #}
+<div class="row">
+    <label class="col-sm">CEP
+        <input type="text" name="cep" class="cep-input" maxlength="9" placeholder="00000-000"
+               value="{{ form.get('cep', '') if form else '' }}">
+        <small class="cep-msg muted"></small>
+    </label>
+    <label class="col">Rua
+        <input type="text" name="street" value="{{ form.get('street', '') if form else '' }}">
+    </label>
+</div>
+<div class="row">
+    <label class="col-sm">Número
+        <input type="text" name="number" value="{{ form.get('number', '') if form else '' }}">
+    </label>
+    <label class="col">Complemento
+        <input type="text" name="complement" value="{{ form.get('complement', '') if form else '' }}" placeholder="Apto, bloco...">
+    </label>
+</div>
+<div class="row">
+    <label class="col">Bairro
+        <input type="text" name="district" value="{{ form.get('district', '') if form else '' }}">
+    </label>
+    <label class="col">Cidade
+        <input type="text" name="city" value="{{ form.get('city', '') if form else '' }}">
+    </label>
+    <label class="col-xs">UF
+        <input type="text" name="state" maxlength="2" value="{{ form.get('state', '') if form else '' }}">
+    </label>
+</div>

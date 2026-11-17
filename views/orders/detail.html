@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Pedido #{{ order.id }}{% endblock %}
+{% block content %}
+
+<h1>Pedido #{{ order.id }}</h1>
+<p class="muted">Feito em {{ order.created_at.strftime('%d/%m/%Y às %H:%M') }}</p>
+
+<div class="tracker" id="tracker" data-status="{{ order.status }}">
+    {% for s in steps %}
+        <div class="step" data-step="{{ s }}">
+            <div class="dot"></div>
+            <span>{{ {'recebido':'Recebido','em_preparo':'Em preparo','saiu':'Saiu para entrega','entregue':'Entregue'}[s] }}</span>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="box eta-box">
+    <span id="status-label" class="status status-{{ order.status }}">{{ order.status_label() }}</span>
+    <span id="eta-text">
+        {% if order.status != 'entregue' %}
+            Previsão de chegada: <strong id="eta">{{ order.estimated_arrival().strftime('%H:%M') }}</strong>
+        {% else %}
+            Entregue {% if order.delivered_at %}às {{ order.delivered_at.strftime('%H:%M') }}{% endif %} 😊
+        {% endif %}
+    </span>
+</div>
+
+<div class="checkout">
+    <div class="box checkout-main">
+        <h2>Itens</h2>
+        {% for i in order.items %}
+            <div class="sum-line">
+                <span>{{ i.quantity }}x {{ i.product_name }}
+                    {% if i.notes %}<br><small class="muted">obs: {{ i.notes }}</small>{% endif %}
+                </span>
+                <span>{{ i.line_total() | brl }}</span>
+            </div>
+        {% endfor %}
+        <hr>
+        <div class="sum-line"><span>Subtotal</span><span>{{ order.subtotal | brl }}</span></div>
+        <div class="sum-line"><span>Entrega</span><span>{{ order.delivery_fee | brl }}</span></div>
+        <div class="sum-line total"><span>Total</span><span>{{ order.total | brl }}</span></div>
+    </div>
+
+    <aside class="box summary">
+        <h2>Entrega</h2>
+        <p>{{ order.address_text }}<br><small class="muted">CEP {{ order.cep }}</small></p>
+        <h2>Pagamento</h2>
+        <p>
+            {% if order.payment_method == 'pix' %}Pix
+            {% else %}Cartão de {{ 'crédito' if order.payment_method == 'credito' else 'débito' }} final {{ order.card_last4 }}{% endif %}
+        </p>
+        {% if order.user_id == user.id %}
+        <form method="post" action="{{ url_for('orders.reorder', order_id=order.id) }}">
+            <button class="btn btn-outline btn-block">Pedir novamente</button>
+        </form>
+        {% endif %}
+    </aside>
+</div>
+
+{# avaliacao - US09 #}
+{% if order.review %}
+    <div class="box">
+        <h2>Sua avaliação</h2>
+        <p class="stars-static">{{ '★' * order.review.stars }}{{ '☆' * (5 - order.review.stars) }}</p>
+        {% if order.review.comment %}<p>"{{ order.review.comment }}"</p>{% endif %}
+    </div>
+{% elif order.user_id == user.id %}
+    <div class="box {% if not order.can_be_reviewed() %}hidden{% endif %}" id="review-box">
+        <h2>Como foi seu pedido?</h2>
+        <form method="post" action="{{ url_for('orders.review_order', order_id=order.id) }}" class="form">
+            <div class="stars-input">
+                {% for n in range(5, 0, -1) %}
+                    <input type="radio" name="stars" id="star{{ n }}" value="{{ n }}">
+                    <label for="star{{ n }}" title="{{ n }} estrela(s)">★</label>
+                {% endfor %}
+            </div>
+            <textarea name="comment" rows="2" maxlength="500" placeholder="Deixe um comentário (opcional)"></textarea>
+            <button class="btn">Enviar avaliação</button>
+        </form>
+    </div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    {% if order.status != 'entregue' %}
+    startOrderTracking("{{ url_for('orders.order_status_json', order_id=order.id) }}");
+    {% endif %}
+    paintTracker("{{ order.status }}");
+</script>
+{% endblock %}

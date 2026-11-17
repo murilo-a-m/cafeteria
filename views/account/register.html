@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Criar conta{% endblock %}
+{% block content %}
+<div class="auth-box">
+    <h1>Criar conta</h1>
+    <form method="post" class="form">
+        <input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
+        <label>Nome completo
+            <input type="text" name="name" value="{{ form.get('name', '') }}" required>
+        </label>
+        <label>E-mail
+            <input type="email" name="email" value="{{ form.get('email', '') }}" required>
+        </label>
+        <label>Telefone (opcional)
+            <input type="text" name="phone" value="{{ form.get('phone', '') }}" placeholder="(41) 99999-9999">
+        </label>
+        <label>Senha
+            <input type="password" name="password" minlength="6" required>
+        </label>
+        <label>Confirme a senha
+            <input type="password" name="password2" minlength="6" required>
+        </label>
+        <button class="btn btn-block">Cadastrar</button>
+    </form>
+    <p class="center">Já tem conta? <a href="{{ url_for('account.login') }}">Entrar</a></p>
+</div>
+{% endblock %}

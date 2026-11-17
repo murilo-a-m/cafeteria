@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Produtos{% endblock %}
+{% block content %}
+
+<div class="panel-head">
+    <h1>Produtos</h1>
+    <a href="{{ url_for('admin.product_form') }}" class="btn">+ Novo produto</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr><th></th><th>Nome</th><th>Categoria</th><th>Preço</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for p in products %}
+        <tr class="{% if not p.available %}faded{% endif %}">
+            <td><img src="{{ p.image_url() }}" class="thumb" alt=""></td>
+            <td>{{ p.name }}</td>
+            <td>{{ p.category_label() }}</td>
+            <td>{{ p.price | brl }}</td>
+            <td>{% if p.available %}Disponível{% else %}<span class="muted">Indisponível</span>{% endif %}</td>
+            <td class="nowrap">
+                <a href="{{ url_for('admin.product_form', product_id=p.id) }}" class="btn btn-sm btn-outline">Editar</a>
+                <form method="post" action="{{ url_for('admin.delete_product', product_id=p.id) }}" class="inline"
+                      onsubmit="return confirm('Excluir {{ p.name }}?')">
+                    <button class="btn-link danger">excluir</button>
+                </form>
+            </td>
+        </tr>
+    {% else %}
+        <tr><td colspan="6" class="muted">Nenhum produto.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

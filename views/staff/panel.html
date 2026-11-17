@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Painel de pedidos{% endblock %}
+{% block content %}
+
+<div class="panel-head">
+    <h1>Painel de pedidos</h1>
+    <div>
+        <label class="check"><input type="checkbox" id="sound-on" checked> Som de novo pedido</label>
+        <small class="muted" id="last-update"></small>
+    </div>
+</div>
+
+<div class="kanban">
+    <div class="col-k">
+        <h3>Recebidos <span class="count" id="c-recebido">0</span></h3>
+        <div id="k-recebido"></div>
+    </div>
+    <div class="col-k">
+        <h3>Em preparo <span class="count" id="c-em_preparo">0</span></h3>
+        <div id="k-em_preparo"></div>
+    </div>
+    <div class="col-k">
+        <h3>Saiu para entrega <span class="count" id="c-saiu">0</span></h3>
+        <div id="k-saiu"></div>
+    </div>
+    <div class="col-k done">
+        <h3>Entregues hoje</h3>
+        <div id="k-entregue"></div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    startStaffPanel("{{ url_for('staff.orders_json') }}", "{{ url_for('staff.advance_status', order_id=0) }}");
+</script>
+{% endblock %}

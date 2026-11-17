@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Log de acessos{% endblock %}
+{% block content %}
+<a href="{{ url_for('admin.users') }}" class="back">&larr; Usuários</a>
+<h1>Log de acessos</h1>
+<p class="muted">Últimos 200 registros</p>
+
+<table class="table">
+    <thead><tr><th>Data/hora</th><th>E-mail</th><th>Ação</th><th>IP</th></tr></thead>
+    <tbody>
+    {% for l in logs %}
+        <tr>
+            <td>{{ l.created_at.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+            <td>{{ l.email }}</td>
+            <td>{% if l.action == 'login_falhou' %}<span class="text-danger">login falhou</span>{% else %}{{ l.action }}{% endif %}</td>
+            <td>{{ l.ip }}</td>
+        </tr>
+    {% else %}
+        <tr><td colspan="4" class="muted">Sem registros.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

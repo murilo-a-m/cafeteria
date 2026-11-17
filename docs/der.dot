@@ -1,0 +1,87 @@
+digraph DER {
+  graph [rankdir=LR, fontname="Helvetica", bgcolor="white", pad=0.3, nodesep=0.5, ranksep=1.0, label="DER - Cafeteria Gourmet Delivery", labelloc=t, fontsize=18];
+  node [shape=plaintext, fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=10, color="#5d4037", arrowhead=crow, arrowtail=tee, dir=both];
+
+  users [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#5d4037"><font color="white"><b>users</b></font></td></tr>
+    <tr><td align="left"><u>id</u> INT (PK)</td></tr>
+    <tr><td align="left">name VARCHAR(100)</td></tr>
+    <tr><td align="left">email VARCHAR(120) UNIQUE</td></tr>
+    <tr><td align="left">password_hash VARCHAR(255)</td></tr>
+    <tr><td align="left">phone VARCHAR(20)</td></tr>
+    <tr><td align="left">role VARCHAR(20)</td></tr>
+    <tr><td align="left">active BOOLEAN</td></tr>
+    <tr><td align="left">created_at DATETIME</td></tr></table>>];
+
+  addresses [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#5d4037"><font color="white"><b>addresses</b></font></td></tr>
+    <tr><td align="left"><u>id</u> INT (PK)</td></tr>
+    <tr><td align="left">user_id INT (FK)</td></tr>
+    <tr><td align="left">cep VARCHAR(9)</td></tr>
+    <tr><td align="left">street VARCHAR(150)</td></tr>
+    <tr><td align="left">number VARCHAR(10)</td></tr>
+    <tr><td align="left">complement VARCHAR(60)</td></tr>
+    <tr><td align="left">district / city / state</td></tr></table>>];
+
+  access_logs [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#5d4037"><font color="white"><b>access_logs</b></font></td></tr>
+    <tr><td align="left"><u>id</u> INT (PK)</td></tr>
+    <tr><td align="left">user_id INT (FK, null)</td></tr>
+    <tr><td align="left">email VARCHAR(120)</td></tr>
+    <tr><td align="left">action VARCHAR(30)</td></tr>
+    <tr><td align="left">ip VARCHAR(45)</td></tr>
+    <tr><td align="left">created_at DATETIME</td></tr></table>>];
+
+  orders [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#c47f3c"><font color="white"><b>orders</b></font></td></tr>
+    <tr><td align="left"><u>id</u> INT (PK)</td></tr>
+    <tr><td align="left">user_id INT (FK)</td></tr>
+    <tr><td align="left">status VARCHAR(30)</td></tr>
+    <tr><td align="left">address_text VARCHAR(300)</td></tr>
+    <tr><td align="left">cep VARCHAR(9)</td></tr>
+    <tr><td align="left">payment_method VARCHAR(10)</td></tr>
+    <tr><td align="left">payment_status VARCHAR(20)</td></tr>
+    <tr><td align="left">card_last4 / pix_code</td></tr>
+    <tr><td align="left">subtotal DECIMAL(10,2)</td></tr>
+    <tr><td align="left">delivery_fee DECIMAL(10,2)</td></tr>
+    <tr><td align="left">total DECIMAL(10,2)</td></tr>
+    <tr><td align="left">eta_minutes INT</td></tr>
+    <tr><td align="left">created_at / paid_at / delivered_at</td></tr></table>>];
+
+  order_items [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#c47f3c"><font color="white"><b>order_items</b></font></td></tr>
+    <tr><td align="left"><u>id</u> INT (PK)</td></tr>
+    <tr><td align="left">order_id INT (FK)</td></tr>
+    <tr><td align="left">product_id INT (FK)</td></tr>
+    <tr><td align="left">product_name VARCHAR(100)</td></tr>
+    <tr><td align="left">unit_price DECIMAL(10,2)</td></tr>
+    <tr><td align="left">quantity INT</td></tr>
+    <tr><td align="left">notes VARCHAR(200)</td></tr></table>>];
+
+  products [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#5d4037"><font color="white"><b>products</b></font></td></tr>
+    <tr><td align="left"><u>id</u> INT (PK)</td></tr>
+    <tr><td align="left">name VARCHAR(100)</td></tr>
+    <tr><td align="left">description TEXT</td></tr>
+    <tr><td align="left">price DECIMAL(10,2)</td></tr>
+    <tr><td align="left">category VARCHAR(20)</td></tr>
+    <tr><td align="left">image VARCHAR(200)</td></tr>
+    <tr><td align="left">available BOOLEAN</td></tr>
+    <tr><td align="left">created_at / updated_at</td></tr></table>>];
+
+  reviews [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#5d4037"><font color="white"><b>reviews</b></font></td></tr>
+    <tr><td align="left"><u>id</u> INT (PK)</td></tr>
+    <tr><td align="left">order_id INT (FK, UNIQUE)</td></tr>
+    <tr><td align="left">stars INT (1 a 5)</td></tr>
+    <tr><td align="left">comment VARCHAR(500)</td></tr>
+    <tr><td align="left">created_at DATETIME</td></tr></table>>];
+
+  users -> addresses [label="1 : N"];
+  users -> orders [label="1 : N"];
+  users -> access_logs [label="1 : N"];
+  orders -> order_items [label="1 : N"];
+  products -> order_items [label="1 : N"];
+  orders -> reviews [label="1 : 0..1", arrowhead=teeodot];
+}

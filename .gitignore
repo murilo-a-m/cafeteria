@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+venv/
+.venv/
+cafeteria.db
+static/uploads/*
+!static/uploads/.gitkeep
+.env

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Pagamento via Pix{% endblock %}
+{% block content %}
+
+<div class="auth-box center">
+    <h1>Pague com Pix</h1>
+    <p>Pedido <strong>#{{ order.id }}</strong> &middot; Total <strong>{{ order.total | brl }}</strong></p>
+
+    <div class="pix-qr">PIX</div>
+
+    <p class="muted">Copie o código abaixo e cole no app do seu banco:</p>
+    <textarea id="pix-code" readonly rows="3">{{ order.pix_code }}</textarea>
+    <button class="btn btn-outline" type="button" onclick="copyPix()">Copiar código</button>
+
+    <hr>
+    <p class="muted"><small>Ambiente de teste: o banco não é chamado de verdade. Clique abaixo pra simular a confirmação do pagamento.</small></p>
+    <form method="post" action="{{ url_for('orders.confirm_pix', order_id=order.id) }}">
+        <button class="btn btn-block">Já paguei</button>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyPix() {
+    const txt = document.getElementById("pix-code");
+    txt.select();
+    navigator.clipboard.writeText(txt.value).then(() => {
+        alert("Código copiado!");
+    }).catch(() => {
+        // navegador antigo
+        document.execCommand("copy");
+    });
+}
+</script>
+{% endblock %}

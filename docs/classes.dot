@@ -1,0 +1,41 @@
+digraph Classes {
+  graph [rankdir=TB, fontname="Helvetica", bgcolor="white", pad=0.3, nodesep=0.6, ranksep=0.8, label="Diagrama de Classes - Cafeteria Gourmet Delivery", labelloc=t, fontsize=18];
+  node [shape=plaintext, fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=10, color="#5d4037", arrowhead=none];
+
+  User [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+   <tr><td bgcolor="#efe2d3"><b>User</b></td></tr>
+   <tr><td align="left" balign="left">- id: int<br/>- name: str<br/>- email: str<br/>- password_hash: str<br/>- phone: str<br/>- role: str<br/>- active: bool</td></tr>
+   <tr><td align="left" balign="left">+ set_password(pwd)<br/>+ check_password(pwd): bool<br/>+ is_staff(): bool<br/>+ first_name(): str</td></tr></table>>];
+  Address [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+   <tr><td bgcolor="#efe2d3"><b>Address</b></td></tr>
+   <tr><td align="left" balign="left">- id: int<br/>- cep: str<br/>- street: str<br/>- number: str<br/>- complement: str<br/>- district, city, state: str</td></tr>
+   <tr><td align="left" balign="left">+ one_line(): str</td></tr></table>>];
+  AccessLog [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+   <tr><td bgcolor="#efe2d3"><b>AccessLog</b></td></tr>
+   <tr><td align="left" balign="left">- id: int<br/>- email: str<br/>- action: str<br/>- ip: str<br/>- created_at: datetime</td></tr>
+   <tr><td align="left"> </td></tr></table>>];
+  Order [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+   <tr><td bgcolor="#f3d9bd"><b>Order</b></td></tr>
+   <tr><td align="left" balign="left">- id: int<br/>- status: str<br/>- address_text: str<br/>- payment_method: str<br/>- payment_status: str<br/>- subtotal, delivery_fee, total: Decimal<br/>- eta_minutes: int<br/>- created_at, paid_at, delivered_at: datetime</td></tr>
+   <tr><td align="left" balign="left">+ status_label(): str<br/>+ next_status(): str<br/>+ estimated_arrival(): datetime<br/>+ can_be_reviewed(): bool</td></tr></table>>];
+  OrderItem [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+   <tr><td bgcolor="#f3d9bd"><b>OrderItem</b></td></tr>
+   <tr><td align="left" balign="left">- id: int<br/>- product_name: str<br/>- unit_price: Decimal<br/>- quantity: int<br/>- notes: str</td></tr>
+   <tr><td align="left" balign="left">+ line_total(): Decimal</td></tr></table>>];
+  Product [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+   <tr><td bgcolor="#efe2d3"><b>Product</b></td></tr>
+   <tr><td align="left" balign="left">- id: int<br/>- name: str<br/>- description: str<br/>- price: Decimal<br/>- category: str<br/>- image: str<br/>- available: bool</td></tr>
+   <tr><td align="left" balign="left">+ category_label(): str<br/>+ image_url(): str</td></tr></table>>];
+  Review [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+   <tr><td bgcolor="#efe2d3"><b>Review</b></td></tr>
+   <tr><td align="left" balign="left">- id: int<br/>- stars: int<br/>- comment: str</td></tr>
+   <tr><td align="left"> </td></tr></table>>];
+
+  User -> Address [taillabel="1", headlabel="0..*", label=" possui"];
+  User -> Order [taillabel="1", headlabel="0..*", label=" faz"];
+  User -> AccessLog [taillabel="1", headlabel="0..*", label=" gera"];
+  Order -> OrderItem [arrowtail=diamond, dir=back, taillabel="1", headlabel="1..*", label=" composto de"];
+  OrderItem -> Product [taillabel="0..*", headlabel="1", label=" refere-se a"];
+  Order -> Review [taillabel="1", headlabel="0..1", label=" recebe"];
+}

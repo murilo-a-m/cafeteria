@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Carrinho{% endblock %}
+{% block content %}
+
+<h1>Seu carrinho</h1>
+
+{% if not items %}
+    <div class="empty">
+        <p>Seu carrinho está vazio.</p>
+        <a href="{{ url_for('shop.index') }}" class="btn">Ver cardápio</a>
+    </div>
+{% else %}
+
+<div class="cart-list">
+    {% for it in items %}
+    <div class="cart-item">
+        <img src="{{ it.product.image_url() }}" alt="">
+        <div class="cart-info">
+            <strong>{{ it.product.name }}</strong>
+            <small>{{ it.product.price | brl }} cada</small>
+
+            <form method="post" action="{{ url_for('cart.update_item', product_id=it.product.id) }}" class="note-form">
+                <input type="text" name="note" value="{{ it.note }}" placeholder="Observação (opcional)" maxlength="200">
+                <button class="btn-link">salvar</button>
+            </form>
+        </div>
+
+        <div class="qty-box">
+            <form method="post" action="{{ url_for('cart.update_item', product_id=it.product.id) }}">
+                <button name="action" value="minus" class="qty-btn">−</button>
+            </form>
+            <span>{{ it.qty }}</span>
+            <form method="post" action="{{ url_for('cart.update_item', product_id=it.product.id) }}">
+                <button name="action" value="plus" class="qty-btn">+</button>
+            </form>
+        </div>
+
+        <div class="line-total">{{ it.line_total | brl }}</div>
+
+        <form method="post" action="{{ url_for('cart.remove_item', product_id=it.product.id) }}">
+            <button class="btn-link danger" title="Remover">remover</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="cart-summary">
+    <div>Subtotal: <strong>{{ subtotal | brl }}</strong></div>
+    <small class="muted">A taxa de entrega é calculada no próximo passo.</small>
+    <div class="actions">
+        <a href="{{ url_for('shop.index') }}" class="btn btn-outline">Continuar comprando</a>
+        <a href="{{ url_for('orders.checkout') }}" class="btn">Finalizar pedido</a>
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Minha conta{% endblock %}
+{% block content %}
+
+<h1>Minha conta</h1>
+<p class="muted">{{ user.name }} &middot; {{ user.email }}</p>
+
+<h2>Meus pedidos</h2>
+{% if not orders %}
+    <p class="muted">Você ainda não fez nenhum pedido.</p>
+{% else %}
+<table class="table">
+    <thead>
+        <tr><th>#</th><th>Data</th><th>Itens</th><th>Total</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for o in orders %}
+        <tr>
+            <td><a href="{{ url_for('orders.order_detail', order_id=o.id) }}">#{{ o.id }}</a></td>
+            <td>{{ o.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+            <td>
+                {% for i in o.items %}{{ i.quantity }}x {{ i.product_name }}{% if not loop.last %}, {% endif %}{% endfor %}
+            </td>
+            <td>{{ o.total | brl }}</td>
+            <td><span class="status status-{{ o.status }}">{{ o.status_label() }}</span></td>
+            <td>
+                <form method="post" action="{{ url_for('orders.reorder', order_id=o.id) }}">
+                    <button class="btn btn-sm btn-outline">Pedir novamente</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<h2>Endereços salvos</h2>
+{% for a in addresses %}
+    <div class="address-row">
+        <span>{{ a.one_line() }} &middot; CEP {{ a.cep }}</span>
+        <form method="post" action="{{ url_for('account.delete_address', addr_id=a.id) }}">
+            <button class="btn-link danger">excluir</button>
+        </form>
+    </div>
+{% else %}
+    <p class="muted">Nenhum endereço salvo.</p>
+{% endfor %}
+
+<details class="box">
+    <summary>Adicionar endereço</summary>
+    <form method="post" action="{{ url_for('account.add_address') }}" class="form address-form">
+        {% include "orders/_address_fields.html" %}
+        <button class="btn">Salvar endereço</button>
+    </form>
+</details>
+
+{% endblock %}
